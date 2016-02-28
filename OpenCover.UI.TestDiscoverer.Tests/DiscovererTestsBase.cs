@@ -9,10 +9,10 @@ namespace OpenCover.UI.TestDiscoverer.Tests
     [TestFixture]
     public abstract class DiscovererTestsBase
     {
-        protected void AssertDiscoveredMethod(Type testFixtureInAssemblyToDiscoverTestsIn, string expectedNameOfFirstTestMethod)
+        protected void AssertDiscoveredMethod(Type testFixtureInAssemblyToDiscoverTestsIn, params string[] expectedTestMethodsName)
         {
             // Arrange
-            var discoverer = new Discoverer(new List<string> { testFixtureInAssemblyToDiscoverTestsIn.Assembly.Location });
+            var discoverer = new Discoverer(new List<string> { testFixtureInAssemblyToDiscoverTestsIn.Assembly.Location }, @"C:\Program Files (x86)\NUnit 2.6.4\bin\nunit-console.exe");
 
             // Act
             var discoveredTests = discoverer.Discover();
@@ -20,11 +20,13 @@ namespace OpenCover.UI.TestDiscoverer.Tests
             // Assert
             discoveredTests.Should().NotBeNullOrEmpty();
 
-            var discoveredTest = discoveredTests.FirstOrDefault(x => x.Name == testFixtureInAssemblyToDiscoverTestsIn.Name);
+            var discoveredTest = discoveredTests.SingleOrDefault(x => x.Name == testFixtureInAssemblyToDiscoverTestsIn.Name);
             discoveredTest.Should().NotBeNull();
 
-            var discoveredMethod = discoveredTest.TestMethods.FirstOrDefault(x => x.Name == expectedNameOfFirstTestMethod);
-            discoveredMethod.Should().NotBeNull();
+            var discoveredMethodsNames = discoveredTest.TestMethods.Select(p => p.Name);
+
+            foreach (var expectedTestMethodName in expectedTestMethodsName)
+                Assert.Contains(expectedTestMethodName, discoveredMethodsNames.ToList());
         }
     }
 }

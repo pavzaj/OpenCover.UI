@@ -2,12 +2,10 @@
 
 namespace OpenCover.UI.TestDiscoverer.TestResources.NUnit
 {
-    [TestFixture]
-    public class TestFixtureWithNamedTestCase
+    internal class TestFixtureWithoutExplicitTextFixtureAttributeWithNamedTestCases
     {
         [TestCase(true, TestName = "TestSomethingTrue")]
         [TestCase(true, TestName = "TestSomethingTrue2")]
         public void SomeNamedTestCase(bool input) { }
-
     }
 }

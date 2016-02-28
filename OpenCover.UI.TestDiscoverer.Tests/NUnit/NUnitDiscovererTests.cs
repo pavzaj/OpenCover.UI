@@ -8,9 +8,9 @@ namespace OpenCover.UI.TestDiscoverer.Tests.NUnit
     {
         [TestCase(typeof(RegularTestFixture), "RegularTestMethod")]
         [TestCase(typeof(TestFixtureWithoutExplicitTestFixtureAttribute), "TestMethodInTestFixtureWithoutExplicitTestFixtureAttribute")]
-        [TestCase(typeof(TestFixtureWithTestCase), "SomeTestCase")]
-        [TestCase(typeof(TestFixtureWithNamedTestCase), "SomeNamedTestCase")]
-        public void Discover_Finds_Regular_Test_Fixture_And_Method(Type testFixtureInAssemblyToDiscoverTestsIn, string expectedNameOfFirstTestMethod)
+        [TestCase(typeof(TestFixtureWithTestCases), "SomeTestCase(True)", "SomeTestCase(False)")]
+        [TestCase(typeof(TestFixtureWithNamedTestCases), "TestSomethingTrue", "TestSomethingTrue2")]
+        public void Discover_Finds_Regular_Test_Fixture_And_Method(Type testFixtureInAssemblyToDiscoverTestsIn, params string[] expectedNameOfFirstTestMethod)
         {
             AssertDiscoveredMethod(testFixtureInAssemblyToDiscoverTestsIn, expectedNameOfFirstTestMethod);
         }
