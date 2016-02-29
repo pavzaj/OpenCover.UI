@@ -43,7 +43,11 @@ namespace OpenCover.UI.TestDiscoverer.NUnit
                     var testMethodsToAdd = new List<TestMethod>();
 
                     foreach (string testCase in testCasesInClass)
+<<<<<<< HEAD
                         testMethodsToAdd.Add(new TestMethod() { Name = testCase.Substring(type.FullName.Length + 1), Traits = new[] { "No Traits" } });
+=======
+                        testMethodsToAdd.Add(new TestMethod() { Name = testCase.Substring(type.FullName.Length + 1) });
+>>>>>>> c6cf78833f29c47959437034b60cab9ce6fc0f3d
 
                     testClassToAdd.TestMethods = testMethodsToAdd.ToArray();
 
