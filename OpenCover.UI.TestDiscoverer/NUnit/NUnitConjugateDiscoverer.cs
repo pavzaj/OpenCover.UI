@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Mono.Cecil;
+using NUnit.Engine.Drivers;
 using OpenCover.UI.Model.Test;
 
 namespace OpenCover.UI.TestDiscoverer.NUnit
@@ -10,19 +14,15 @@ namespace OpenCover.UI.TestDiscoverer.NUnit
     internal class NUnitConjugateDiscoverer : DiscovererBase
     {
         const string nunitTestLabelMarker = "*****";
-        string nunitConsolePath;
 
-        public NUnitConjugateDiscoverer(IEnumerable<string> dlls, string nunitConsolePath)
+        public NUnitConjugateDiscoverer(IEnumerable<string> dlls)
             : base(dlls)
         {
-            this.nunitConsolePath = nunitConsolePath;
         }
 
         protected override List<TestClass> DiscoverTestsInAssembly(string dllPath, AssemblyDefinition assembly)
         {
             var result = new List<TestClass>();
-
-            System.Console.WriteLine("Detecting Nunit tests");
 
             var testCases = GetNunitTestCasesFromDll(dllPath);
 
@@ -43,11 +43,7 @@ namespace OpenCover.UI.TestDiscoverer.NUnit
                     var testMethodsToAdd = new List<TestMethod>();
 
                     foreach (string testCase in testCasesInClass)
-<<<<<<< HEAD
                         testMethodsToAdd.Add(new TestMethod() { Name = testCase.Substring(type.FullName.Length + 1), Traits = new[] { "No Traits" } });
-=======
-                        testMethodsToAdd.Add(new TestMethod() { Name = testCase.Substring(type.FullName.Length + 1) });
->>>>>>> c6cf78833f29c47959437034b60cab9ce6fc0f3d
 
                     testClassToAdd.TestMethods = testMethodsToAdd.ToArray();
 
@@ -61,6 +57,13 @@ namespace OpenCover.UI.TestDiscoverer.NUnit
         private IList<string> GetNunitTestCasesFromDll(string dllPath)
         {
             StringCollection values = new StringCollection();
+            var driv = new NUnit3FrameworkDriver(AppDomain.CurrentDomain);
+
+            driv.Load(dllPath, new Dictionary<string, object>());
+
+            var testCasesXml = driv.Explore("");
+
+            var nunitConsolePath = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory + "\\nunit-console.exe";
 
             var proc = new Process
             {
