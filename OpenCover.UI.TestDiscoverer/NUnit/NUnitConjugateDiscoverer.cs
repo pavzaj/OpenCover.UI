@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Xml;
 using Mono.Cecil;
 using NUnit.Engine.Drivers;
 using OpenCover.UI.Model.Test;
@@ -56,47 +53,24 @@ namespace OpenCover.UI.TestDiscoverer.NUnit
 
         private IList<string> GetNunitTestCasesFromDll(string dllPath)
         {
-            StringCollection values = new StringCollection();
-            var driv = new NUnit3FrameworkDriver(AppDomain.CurrentDomain);
+            var nunitDriver = new NUnit3FrameworkDriver(AppDomain.CurrentDomain);
 
-            driv.Load(dllPath, new Dictionary<string, object>());
+            nunitDriver.Load(dllPath, new Dictionary<string, object>());
 
-            var testCasesXml = driv.Explore("");
+            var testCasesXmlString = nunitDriver.Explore("");
 
-            var nunitConsolePath = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory + "\\nunit-console.exe";
+            XmlDocument doc = new XmlDocument();
 
-            var proc = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = nunitConsolePath,
-                    Arguments = string.Format("{0} {1}", dllPath, "/labels /nologo /noshadow /timeout=1"),
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true
-                }
-            };
+            doc.LoadXml(testCasesXmlString);
 
-            proc.OutputDataReceived += (s, e) =>
-            {
-                lock (values)
-                {
-                    if (e.Data != null && e.Data.StartsWith(nunitTestLabelMarker))
-                        values.Add(e.Data.Split(' ')[1]);
-                }
-            };
+            var testCasesXml = doc.FirstChild;
 
-            proc.Start();
-
-            proc.BeginOutputReadLine();
-
-            proc.WaitForExit();
+            var testCases = testCasesXml.SelectNodes("//test-case");
 
             var result = new List<string>();
 
-            foreach (var line in values)
-                result.Add(line);
+            foreach (XmlNode tc in testCases)
+                result.Add(tc.Attributes.GetNamedItem("fullname").Value);
 
             return result;
         }

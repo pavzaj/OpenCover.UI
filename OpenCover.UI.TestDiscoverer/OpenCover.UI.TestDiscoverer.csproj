@@ -41,11 +41,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\OpenCover.UI\Lib\Mono.Cecil.dll</HintPath>
+    <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.ConsoleRunner.3.2.0\tools\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit-agent">
+      <HintPath>..\packages\NUnit.ConsoleRunner.3.2.0\tools\nunit-agent.exe</HintPath>
+    </Reference>
+    <Reference Include="nunit.engine">
+      <HintPath>..\packages\NUnit.ConsoleRunner.3.2.0\tools\nunit.engine.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.engine.api">
+      <HintPath>..\packages\NUnit.ConsoleRunner.3.2.0\tools\nunit.engine.api.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.Console.3.2.0\bin\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

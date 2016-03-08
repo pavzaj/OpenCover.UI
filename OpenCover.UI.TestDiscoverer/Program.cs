@@ -3,19 +3,19 @@ using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Text;
 using System.Web.Script.Serialization;
 
 namespace OpenCover.UI.TestDiscoverer
 {
     internal class Program
     {
-        private static void Discover(string[] args, NamedPipeClientStream stream)
+        private static void Discover(string[] args, Stream stream)
         {
             if (args != null && args.Length > 0)
             {
                 var dlls = args.Skip(1);
-                var nunitConsolePath = args.LastOrDefault();
-                var tests = new Discoverer(dlls, nunitConsolePath).Discover();
+                var tests = new Discoverer(dlls).Discover();
                 string serialized = string.Empty;
 
                 if (tests != null)
@@ -36,7 +36,7 @@ namespace OpenCover.UI.TestDiscoverer
                 {
                     NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", args[0], PipeDirection.InOut);
                     pipeClient.Connect();
-                    Discover(args, pipeClient);
+                    Discover(args, new MemoryStream());
 
                     pipeClient.WaitForPipeDrain();
 
@@ -45,7 +45,28 @@ namespace OpenCover.UI.TestDiscoverer
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                var sb = new StringBuilder();
+
+                sb.AppendLine(ex.Message);
+                sb.AppendLine(ex.StackTrace);
+
+                foreach (var arg in args)
+                    sb.AppendLine(arg);
+
+                string fileName = DateTime.Now.ToString("YYYY-MM-DD hh:mm:ss");
+
+                Guid parsedGuid;
+
+                if (args.Length > 0 && Guid.TryParse(args[0], out parsedGuid))
+                    fileName = parsedGuid.ToString();
+
+                try
+                {
+                    File.WriteAllText(fileName, sb.ToString());
+                }
+                catch (Exception) { }
+
+                Console.WriteLine(sb.ToString());
             }
         }
 
