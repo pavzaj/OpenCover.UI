@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 using Mono.Cecil;
 using NUnit.Engine.Drivers;
+using NUnit.Engine.Extensibility;
 using OpenCover.UI.Model.Test;
 
 namespace OpenCover.UI.TestDiscoverer.NUnit
@@ -51,10 +52,8 @@ namespace OpenCover.UI.TestDiscoverer.NUnit
             return result;
         }
 
-        private IList<string> GetNunitTestCasesFromDll(string dllPath)
+        private static IList<string> GetUnitTestCasesWithNunitDriver(string dllPath, IFrameworkDriver nunitDriver)
         {
-            var nunitDriver = new NUnit3FrameworkDriver(AppDomain.CurrentDomain);
-
             nunitDriver.Load(dllPath, new Dictionary<string, object>());
 
             var testCasesXmlString = nunitDriver.Explore("");
@@ -73,6 +72,15 @@ namespace OpenCover.UI.TestDiscoverer.NUnit
                 result.Add(tc.Attributes.GetNamedItem("fullname").Value);
 
             return result;
+        }
+
+        private ISet<string> GetNunitTestCasesFromDll(string dllPath)
+        {
+            var result = GetUnitTestCasesWithNunitDriver(dllPath, new NUnit3FrameworkDriver(AppDomain.CurrentDomain));
+
+            result.Concat(GetUnitTestCasesWithNunitDriver(dllPath, new NUnit2FrameworkDriver(AppDomain.CurrentDomain)));
+
+            return new HashSet<string>(result.Distinct());
         }
     }
 }
