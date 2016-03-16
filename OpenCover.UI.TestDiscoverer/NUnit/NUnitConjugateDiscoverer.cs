@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using Mono.Cecil;
+using NUnit.Engine.Drivers;
+using NUnit.Engine.Extensibility;
 using OpenCover.UI.Model.Test;
 
 namespace OpenCover.UI.TestDiscoverer.NUnit
@@ -48,36 +52,34 @@ namespace OpenCover.UI.TestDiscoverer.NUnit
             return result;
         }
 
-        //private static IList<string> GetUnitTestCasesWithNunitDriver(string dllPath, IFrameworkDriver nunitDriver)
-        //{
-        //    nunitDriver.Load(dllPath, new Dictionary<string, object>());
+        private static IList<string> GetUnitTestCasesWithNunitDriver(string dllPath, IFrameworkDriver nunitDriver)
+        {
+            nunitDriver.Load(dllPath, new Dictionary<string, object>());
 
-        // var testCasesXmlString = nunitDriver.Explore("");
+            var testCasesXmlString = nunitDriver.Explore("");
 
-        // XmlDocument doc = new XmlDocument();
+            XmlDocument doc = new XmlDocument();
 
-        // doc.LoadXml(testCasesXmlString);
+            doc.LoadXml(testCasesXmlString);
 
-        // var testCasesXml = doc.FirstChild;
+            var testCasesXml = doc.FirstChild;
 
-        // var testCases = testCasesXml.SelectNodes("//test-case");
+            var testCases = testCasesXml.SelectNodes("//test-case");
 
-        // var result = new List<string>();
+            var result = new List<string>();
 
-        // foreach (XmlNode tc in testCases) result.Add(tc.Attributes.GetNamedItem("fullname").Value);
+            foreach (XmlNode tc in testCases) result.Add(tc.Attributes.GetNamedItem("fullname").Value);
 
-        //    return result;
-        //}
+            return result;
+        }
 
         private ISet<string> GetNunitTestCasesFromDll(string dllPath)
         {
-            return new HashSet<string>();
-
-            //var result = GetUnitTestCasesWithNunitDriver(dllPath, new NUnit3FrameworkDriver(AppDomain.CurrentDomain));
+            var result = GetUnitTestCasesWithNunitDriver(dllPath, new NUnit3FrameworkDriver(AppDomain.CurrentDomain));
 
             //result.Concat(GetUnitTestCasesWithNunitDriver(dllPath, new NUnit2FrameworkDriver(AppDomain.CurrentDomain)));
 
-            //return new HashSet<string>(result.Distinct());
+            return new HashSet<string>(result.Distinct());
         }
     }
 }
