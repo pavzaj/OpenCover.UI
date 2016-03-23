@@ -12,7 +12,7 @@ namespace OpenCover.UI.TestDiscoverer.Tests
         protected void AssertDiscoveredMethod(Type testFixtureInAssemblyToDiscoverTestsIn, params string[] expectedTestMethodsName)
         {
             // Arrange
-            var discoverer = new Discoverer(new List<string> { testFixtureInAssemblyToDiscoverTestsIn.Assembly.Location });
+            var discoverer = new Discoverer(new List<string> { testFixtureInAssemblyToDiscoverTestsIn.Assembly.Location }, @"..\..\..\packages\NUnit.ConsoleRunner.3.2.0\tools\nunit3-console.exe");
 
             // Act
             var discoveredTests = discoverer.Discover();

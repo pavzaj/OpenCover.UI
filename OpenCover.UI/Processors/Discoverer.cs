@@ -95,20 +95,22 @@ namespace OpenCover.UI.Processors
                 {
                     pipeServer.EndWaitForConnection(res);
 
-                    var newTests = ReadObject<TestClass[]>(pipeServer);
-
+                    var newTests = ReadObject<OpenCover.UI.Model.Test.TestClass[]>(pipeServer);
                     if (newTests != null && newTests.Length > 0)
+                    {
                         tests.AddRange(newTests);
+                    }
 
                     tests.ForEach(TestMethodWrapper => TestMethodWrapper.UpdateChildren());
 
                     IDEHelper.WriteToOutputWindow("{0} tests found", tests.Sum(test => test.TestMethods != null ? test.TestMethods.Length : 0));
-
                     discoveryDone(tests);
                 }
             }, null);
 
-            var processInfo = new ProcessStartInfo(testDiscovererPath, String.Format("{0} {1}", pipeGuid, testsDLLs))
+            var nunitPathEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(OpenCoverUISettings.Default.NUnitPath)); // requires encoding because of Pipe interface bahaviour
+
+            var processInfo = new ProcessStartInfo(testDiscovererPath, String.Format("{0} {1} {2}", pipeGuid, nunitPathEncoded, testsDLLs))
             {
                 CreateNoWindow = true,
                 UseShellExecute = false

@@ -1,10 +1,10 @@
 ﻿using System;
 using NUnit.Framework;
-using OpenCover.UI.TestDiscoverer.TestResources.NUnit;
+using OpenCover.UI.TestDiscoverer.TestResources.NUnit2;
 
 namespace OpenCover.UI.TestDiscoverer.Tests.NUnit
 {
-    public class NUnitDiscovererTests : DiscovererTestsBase
+    public class NUnitDiscovererTestsForNunit2 : DiscovererTestsBase
     {
         [TestCase(typeof(RegularTestFixture), "RegularTestMethod")]
         [TestCase(typeof(TestFixtureWithoutExplicitTestFixtureAttribute), "TestMethodInTestFixtureWithoutExplicitTestFixtureAttribute")]

@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace OpenCover.UI.TestDiscoverer.TestResources.NUnit
+namespace OpenCover.UI.TestDiscoverer.TestResources.NUnit2
 {
     public class TestFixtureWithoutExplicitTestFixtureAttribute
     {

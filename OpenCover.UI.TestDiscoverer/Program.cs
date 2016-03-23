@@ -10,22 +10,19 @@ namespace OpenCover.UI.TestDiscoverer
 {
     internal class Program
     {
-        private static void Discover(string[] args, Stream stream)
+        private static string Discover(string[] dlls, Stream stream, string nunit3ConsoleExePath)
         {
-            if (args != null && args.Length > 0)
+            string discoveredTestsInJson = string.Empty;
+
+            if (dlls != null && dlls.Length > 0)
             {
-                var dlls = args.Skip(1);
-                var tests = new Discoverer(dlls).Discover();
-                string serialized = string.Empty;
+                var tests = new Discoverer(dlls, nunit3ConsoleExePath).Discover();
 
                 if (tests != null)
-                {
-                    var jsSerializer = new JavaScriptSerializer();
-                    serialized = jsSerializer.Serialize(tests);
-                }
-
-                Write(stream, serialized);
+                    discoveredTestsInJson = new JavaScriptSerializer().Serialize(tests);
             }
+
+            return discoveredTestsInJson;
         }
 
         private static void Main(string[] args)
@@ -34,9 +31,17 @@ namespace OpenCover.UI.TestDiscoverer
             {
                 if (args.Length > 1)
                 {
-                    NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", args[0], PipeDirection.InOut);
+                    var pipeGuid = args[0];
+
+                    NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", pipeGuid, PipeDirection.InOut);
+
                     pipeClient.Connect();
-                    Discover(args, new MemoryStream());
+
+                    var dlls = args.Skip(2).ToArray();
+
+                    var nunit3ConsoleExePath = Encoding.UTF8.GetString(Convert.FromBase64String(args[1]));
+
+                    Write(pipeClient, Discover(dlls, pipeClient, nunit3ConsoleExePath));
 
                     pipeClient.WaitForPipeDrain();
 

@@ -17,9 +17,9 @@ namespace OpenCover.UI.TestDiscoverer
         /// Initializes a new instance of the <see cref="Discoverer"/> class.
         /// </summary>
         /// <param name="dlls">The DLLS.</param>
-        public Discoverer(IEnumerable<string> dlls)
+        public Discoverer(IEnumerable<string> dlls, string nunit3ConsoleExePath)
         {
-            discoverers.Add(new NUnitConjugateDiscoverer(dlls));
+            discoverers.Add(new NUnitConjugateDiscoverer(dlls, nunit3ConsoleExePath));
             //discoverers.Add(new NUnitDiscoverer(dlls));
 
             discoverers.Add(new MSTestDiscoverer(dlls));

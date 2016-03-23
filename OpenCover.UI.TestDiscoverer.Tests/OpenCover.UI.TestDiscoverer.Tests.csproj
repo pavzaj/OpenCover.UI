@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="DiscovererTestsBase.cs" />
     <Compile Include="MSTest\MSTestDiscovererTests.cs" />
+    <Compile Include="NUnit\NUnitDiscovererTestsForNunit2.cs" />
     <Compile Include="NUnit\NUnitDiscovererTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -74,6 +75,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OpenCover.UI.TestDiscoverer.TestResourcesForNunit2\OpenCover.UI.TestDiscoverer.TestResourcesForNunit2.csproj">
+      <Project>{b2235cbf-e835-49ce-9250-264e56446b4d}</Project>
+      <Name>OpenCover.UI.TestDiscoverer.TestResourcesForNunit2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenCover.UI.TestDiscoverer.TestResources\OpenCover.UI.TestDiscoverer.TestResources.csproj">
       <Project>{4f2c8986-42cd-4614-8302-0a824ffe8d89}</Project>
       <Name>OpenCover.UI.TestDiscoverer.TestResources</Name>
